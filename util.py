@@ -24,8 +24,8 @@ CUDA: CUDA flag
 def predict_transform(prediction, inp_dim, anchors, num_classes, CUDA=False):
 	batch_size = prediction.size(0)
 	stride = inp_dim // prediction.size(2)
-	# grid_size = inp_dim // stride
-	grid_size = int(prediction.size(2))
+	grid_size = inp_dim // stride
+	# grid_size = int(prediction.size(2))
 	bbox_attrs = 5 + num_classes		# 5 + C
 	num_anchors = len(anchors)
 

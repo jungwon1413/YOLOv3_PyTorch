@@ -109,7 +109,7 @@ model = Darknet(args.cfgfile).to(device)
 model.load_weights(args.weightsfile)
 print("Network successfully loaded")
 
-model.net_info["height"] = args.reso
+model.net_info["height"] = int(args.reso)
 inp_dim = int(model.net_info["height"])
 assert inp_dim % 32 == 0
 assert inp_dim > 32
