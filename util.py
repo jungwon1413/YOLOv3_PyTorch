@@ -105,16 +105,15 @@ def write_results(prediction, confidence, num_classes, nms_conf=0.4):
 	# to (top-left_x, top-left_y, right-bottom_x, right-bottom_y)
 	box_corner = prediction.new(prediction.shape)
 	# center_x - width/2
-	box_corner[:, :, 0] = (prediction[:, :, 0] - prediction[:, :, 2] / 2)
+	box_corner[:, :, 0] = (prediction[:, :, 0] - prediction[:, :, 3] / 2)
 	# center_y - height/2
-	box_corner[:, :, 1] = (prediction[:, :, 1] - prediction[:, :, 3] / 2)
+	box_corner[:, :, 1] = (prediction[:, :, 1] - prediction[:, :, 2] / 2)
 	# center_x + width/2
-	box_corner[:, :, 2] = (prediction[:, :, 0] + prediction[:, :, 2] / 2)
+	box_corner[:, :, 2] = (prediction[:, :, 0] + prediction[:, :, 3] / 2)
 	# center_y + height/2
-	box_corner[:, :, 3] = (prediction[:, :, 1] + prediction[:, :, 3] / 2)
+	box_corner[:, :, 3] = (prediction[:, :, 1] + prediction[:, :, 2] / 2)
 	# Replace to new prediction box
 	prediction[:, :, :4] = box_corner[:, :, :4]
-
 
 
 	# Confidence thresholding and NMS has to be done for one image at once.
@@ -141,7 +140,8 @@ def write_results(prediction, confidence, num_classes, nms_conf=0.4):
 		non_zero_ind = (torch.nonzero(image_pred[:, 4]))
 		
 		try:
-			image_pred_ = image_pred[non_zero_ind.squeeze(), :].view(-1, 7)
+			# image_pred_ = image_pred[non_zero_ind.squeeze(), :].view(-1, 7)
+			image_pred_ = image_pred[non_zero_ind.squeeze(), :]
 		except:
 			continue
 
@@ -161,9 +161,12 @@ def write_results(prediction, confidence, num_classes, nms_conf=0.4):
 		for cls in img_classes:
 
 			# get the detections with one particular class
-			cls_mask = image_pred_ * (image_pred_[:-1] == cls).float().unsqueeze(1)
-			class_mask_ind = torch.nonzero(cls_mask[:, -2]).squeeze()
+			cls_mask = image_pred_ * (image_pred_[:,-1] == cls).float().unsqueeze(1)
+			class_mask_ind = torch.nonzero(cls_mask[:,-2]).squeeze()
+			# if class_mask_ind.shape[0] == 0:		# Found No objects ( > threshold )
+			# 	continue
 			image_pred_class = image_pred_[class_mask_ind].view(-1, 7)
+
 
 			# sort the detections such that the entry with the maximum objectess
 			# confidence is at the top

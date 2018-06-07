@@ -288,7 +288,7 @@ def create_modules(blocks):
 				module.add_module("batch_norm_{0}".format(index), bn)
 
 			# Check the activation
-			# It is either Linear or a Leacky ReLU for YOLO
+			# It is either Linear or a Leaky ReLU for YOLO
 			if activation == "leaky":
 				activn = nn.LeakyReLU(0.1, inplace=True)
 				module.add_module("leaky_{0}".format(index), activn)

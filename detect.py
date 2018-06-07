@@ -196,7 +196,7 @@ for i, batch in enumerate(im_batches):
 	end = time.time()
 
 
-	if type(prediction) == int:
+	if prediction is None or type(prediction) == int:
 #		for im_num, image in enumerate(imlist[i*batch_size : min((i + 1)*batch_size, len(imlist))]):
 #			im_id = i*batch_size + im_num
 #			print("{0:20s} predicted in {1:6.3f} seconds".format(image.split("/")[-1], (end - start)/batch_size))
